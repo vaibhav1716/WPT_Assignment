@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        $(() => {
+
+            $("#t1").blur(() => {
+
+                console.log("blur event occur");
+
+                let input = { pincode: $("#t1").val() };
+                let params = {
+                    data: input,
+                    dataType: 'json',
+                    url: "http://localhost:8081/searching",
+                    type: 'get',
+                    success: (data) => {
+                        if (data.status == true)
+                            $("#t2").val(data.area);
+                        else
+                            $("#t2").val(data.area);
+                    },
+                    err: (errmsg) => {
+
+                        console.log("Error in connecting server");
+                    }
+                }//params end
+
+                $.ajax(params);
+
+
+            });//blur event end
+
+
+
+
+
+
+
+
+        });
+    </script>
+</head>
+
+<body>
+    <h1>So Called Assignment No.04</h1>
+    <br>
+
+    <br><input type="textbox" id="t1" placeholder="pincode" />
+    <br>
+    <br><input type="textbox" id="t2" placeholder="area" />
+
+</body>
+
+</html>

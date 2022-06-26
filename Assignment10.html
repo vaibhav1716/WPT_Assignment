@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    div {
+        font-size: 20px;
+
+        font-weight: bold;
+        margin: 15px;
+
+    }
+
+    input {
+        padding: 5px;
+
+    }
+
+    button {
+        width: 125px;
+        padding: 5px;
+        margin-left: 25px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: gray;
+    }
+
+    .container {
+
+        background-color: bisque;
+        margin-right: 550px;
+        margin-top: 200px;
+        margin-left: 600px;
+        border: solid blue 6px;
+        padding: 2px;
+    }
+
+    .found {
+        color: green;
+    }
+
+    .notfound {
+        color: red;
+    }
+
+    h1 {
+        text-align: center;
+
+    }
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        $(() => {
+            console.log("all tags loaded");
+
+            $("#b1").click(() => {
+
+                console.log("click event");
+                input = { empno: $("#id1").val() };
+
+                let paramstofunction = {
+                    data: input,
+                    dataType: 'json',
+                    url: "http://localhost:8085/searching",
+                    type: 'get',
+                    success: (data) => {
+                        if (data.status == true) {
+                            $("#id1").val(data.empdetails.empno);
+
+                            $("#id2").val(data.empdetails.empname);
+
+                            $("#id3").val(data.empdetails.sal);
+                            $(".ip").removeClass("notfound");
+                            $(".ip").addClass("found");
+
+                        } else {
+                            $("#id1").val(data.empdetails.empno);
+
+                            $("#id2").val(data.empdetails.empname);
+
+                            $("#id3").val(data.empdetails.sal);
+                            $(".ip").removeClass("found");
+                            $(".ip").addClass("notfound");
+
+
+                        }
+
+
+                    },
+                    error: (errmsg) => {
+
+                        console.log("Server not connected" + errmsg);
+                    }
+                }
+                $.ajax(paramstofunction);
+
+            });//blur event     
+
+        });//Dom event
+
+    </script>
+</head>
+
+<body>
+    <div>
+        <h1>So Called Assignment No.05</h1>
+    </div>
+    <div class="container">
+        <div>
+            Employee No:<input class="ip" type="textbox" id="id1" placeholder="empno" />
+        </div>
+        <div>
+            Employee Name:<input class="ip" type="textbox" id="id2" placeholder="empname" />
+        </div>
+        <div>
+            Salary :<input class="ip" type="textbox" id="id3" placeholder="empsalary" />
+        </div>
+        <div>
+            <button id="b1">Check</button>
+        </div>
+    </div>
+</body>
+
+</html>

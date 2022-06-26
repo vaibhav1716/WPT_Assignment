@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        $(() => {
+
+            showcontent();
+
+            console.log("All tags are loaded")
+
+            function showcontent() {
+
+                let ajaxparams = {
+                    data: {},
+                    datType: 'json',
+                    url: 'http://localhost:8086/getAllItems',
+                    type: 'get',
+                    success: (data) => {
+
+
+                        let msg = "";
+                        for (let i = 0; i < data.length; i++) {
+                            msg += "</Br>" + data[i].itemno + " " + data[i].itemname + " " + data[i].price;
+
+                        }
+                        $("#msg").html(msg);
+
+                    },
+                    error: (errMsg) => {
+                        console.log("Error- Server not connected" + errMsg);
+                    }
+                }//ajax params
+
+                $.ajax(ajaxparams);
+
+
+
+            }//showcontent
+
+            $("#itemno").blur(() => {
+
+                console.log("blur event");
+
+                let input = { itemno: $("#itemno").val() };
+
+                let ajaxparams = {
+                    data: input,
+                    datType: 'json',
+                    url: 'http://localhost:8086/getItems',
+                    type: 'get',
+                    success: (data) => {
+                        if (data.status == true) {
+                            $("#itemname").prop('disabled', false);
+                            $("#price").prop('disabled', false);
+                            $("#itemname").val(data.itemdetails.itemname);
+                            $("#price").val(data.itemdetails.price);
+                            console.log("true");
+                            $("#b1").prop('disabled', true);
+                            $("#b2").prop('disabled', false);
+                            $("#id1").html("Item Found");
+                        } else {
+                            $("#itemname").prop('disabled', false);
+                            $("#price").prop('disabled', false);
+                            $("#itemname").val("");
+                            $("#price").val("");
+                            $("#b1").prop('disabled', false);
+                            $("#b2").prop('disabled', true);
+                            $("#id1").html("Item Not Found");
+
+                        }
+                        showcontent();
+
+                    },
+                    error: (errMsg) => {
+                        console.log("Error- Server not connected" + errMsg);
+                    }
+                }//ajax params
+
+                $.ajax(ajaxparams);
+
+
+            });//blur event end
+
+            $("#b1").click(() => {
+
+                console.log("addItem event");
+
+                let input = { itemno: $("#itemno").val(), itemname: $("#itemname").val(), price: $("#price").val() };
+                console.log(input);
+                let ajaxparams = {
+                    data: input,
+                    datType: 'json',
+                    url: 'http://localhost:8086/addItem',
+                    type: 'get',
+                    success: (data) => {
+                        if (data.status == true) {
+                            $("#id1").html("Item Added");
+                            $("#itemno").val("");
+                            $("#itemname").prop('disabled', true);
+                            $("#price").prop('disabled', true);
+                            $("#b1").prop('disabled', true);
+                            $("#b2").prop('disabled', true);
+
+                        } else {
+                            $("#id1").html("Item Not Added");
+                            $("#itemno").val("");
+                            $("#itemname").prop('disabled', true);
+                            $("#price").prop('disabled', true);
+                            $("#b1").prop('disabled', true);
+                            $("#b2").prop('disabled', true);
+
+                        }
+                        showcontent();
+
+                    },
+                    error: (errMsg) => {
+                        console.log("Error- Server not connected" + errMsg);
+                    }
+                }//ajax params
+
+                $.ajax(ajaxparams);
+
+
+            });//add Item event
+
+            $("#b2").click(() => {
+
+                console.log("update click");
+                let input = { itemno: $("#itemno").val(), itemname: $("#itemname").val(), price: $("#price").val() };
+
+                let ajaxparams = {
+                    data: input,
+                    url: 'http://localhost:8086/updateItem',
+                    type: 'get',
+                    datType: 'json',
+                    success: (data) => {
+                        if (data.status == true) {
+                            $("#id1").html("Item Updated");
+                            $("#itemno").val("");
+                            $("#itemname").val("");
+                            $("#price").val("");
+                            $("#itemname").prop('disabled', true);
+                            $("#price").prop('disabled', true);
+                            $("#b1").prop('disabled', true);
+                            $("#b2").prop('disabled', true)
+
+
+                        } else {
+
+                            $("#id1").html("Item Not Updated");
+                            $("#itemno").val("");
+                            $("#itemname").prop('disabled', true);
+                            $("#price").prop('disabled', true);
+                            $("#b1").prop('disabled', true);
+                            $("#b2").prop('disabled', true)
+
+                        }
+                        showcontent();
+
+                    },
+                    Error: (errMsg) => {
+                        console.log("Error- Server not connected" + errMsg);
+                    }
+
+                };//ajax params
+                $.ajax(ajaxparams);
+
+
+
+
+            });//update event 
+
+
+        })//DOM event end
+
+
+    </script>
+</head>
+
+<body>
+    <div>
+        Item No : <input type="textbox" id="itemno" placeholder="itemno" />
+        <span id="id1">Message</span>
+        <br><br> Item Name : <input type="textbox" id="itemname" placeholder="itemname" disabled />
+        <br><br> Item Price : <input type="textbox" id="price" placeholder="price" disabled />
+        <br><br><input type="button" id="b1" value="Add Item" disabled>
+        <input type="button" id="b2" value="Update Item" disabled>
+    </div>
+    <hr>
+
+    <div id="msg">
+        what happend
+    </div>
+
+</body>
+
+</html>

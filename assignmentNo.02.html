@@ -1,0 +1,294 @@
+<html>
+
+<head>
+	<script>
+
+		let empdata = [{ empid: 1, empname: "A", empmail: "a1@gmail.com", deptid: 111 },
+		{ empid: 2, empname: "B", empmail: "b1@gmail.com", deptid: 222 },
+		{ empid: 3, empname: "C", empmail: "c1@gmail.com", deptid: 333 }];
+
+		window.addEventListener('DOMContentLoaded', () => {
+
+
+			function showAll() {
+				console.log("show all items");
+
+				let output = empdata;
+
+				let msg = "";
+				for (let i = 0; i < output.length; i++) //dinosaur way..
+					msg += "<Br/>" + output[i].empid + " --- " + output[i].empname +
+						"--" + output[i].empmail + "--" + output[i].deptid;
+
+				document.querySelector("#contentid").innerHTML = msg;
+
+			}
+
+
+
+			console.log("Always check");
+			showAll();
+
+
+			const t1 = document.querySelector("#t1");
+			t1.addEventListener('blur', () => {
+				let input = document.querySelector("#t1").value;
+				let output = getItemDetailsLogic(input);
+				if (output.result) {
+					document.querySelector("#t1").value = output.empdetails.empid;
+					document.querySelector("#t2").value = output.empdetails.empname;
+					document.querySelector("#t3").value = output.empdetails.empmail;
+					document.querySelector("#t4").value = output.empdetails.deptid;
+					document.querySelector("#modifyid").disabled = false;
+					document.querySelector("#removeid").disabled = false;
+
+					document.querySelector("#s1").innerHTML = "Employee ID found";
+				}
+				else {
+
+					document.querySelector("#t2").value = "";
+					document.querySelector("#t3").value = "";
+					document.querySelector("#t4").value = "";
+					document.querySelector("#addid").disabled = false;
+					document.querySelector("#modifyid").disabled = true;
+					document.querySelector("#removeid").disabled = true;
+					document.querySelector("#s1").innerHTML = "Employee ID not found";
+				}
+				showAll();
+			});
+
+
+
+
+
+
+			const addid = document.querySelector("#addid");
+			addid.addEventListener('click', () => {
+				let input = { empid: document.querySelector("#t1").value, empname: document.querySelector("#t2").value, empmail: document.querySelector("#t3").value, deptid: document.querySelector("#t4").value };
+				let output = getAddIdlogic(input);
+
+				if (output) {
+					document.querySelector("#t1").value = "";
+					document.querySelector("#t2").value = "";
+					document.querySelector("#t3").value = "";
+					document.querySelector("#t4").value = "";
+					document.querySelector("#addid").disabled = true;
+					document.querySelector("#s1").innerHTML = "Employee details added";
+				}
+				else {
+					document.querySelector("#t1").value = "";
+					document.querySelector("#t2").value = "";
+					document.querySelector("#t3").value = "";
+					document.querySelector("#t4").value = "";
+					document.querySelector("#addid").disabled = true;
+					document.querySelector("#s1").innerHTML = "Employee details not added";
+				}
+				showAll();
+
+			});
+
+			const modifyid = document.querySelector("#modifyid");
+			modifyid.addEventListener('click', () => {
+
+				let input = { empid: document.querySelector("#t1").value, empname: document.querySelector("#t2").value, empmail: document.querySelector("#t3").value, deptid: document.querySelector("#t4").value };
+				let output = getModifyLogic(input);
+
+				if (output) {
+					document.querySelector("#t1").value = "";
+					document.querySelector("#t2").value = "";
+					document.querySelector("#t3").value = "";
+					document.querySelector("#t4").value = "";
+					document.querySelector("#modifyid").disabled = true;
+					document.querySelector("#removeid").disabled = true;
+					document.querySelector("#s1").innerHTML = "Employee details modified";
+				}
+				else {
+					document.querySelector("#t1").value = "";
+					document.querySelector("#t2").value = "";
+					document.querySelector("#t3").value = "";
+					document.querySelector("#t4").value = "";
+					document.querySelector("#modifyid").disabled = true;
+					document.querySelector("#removeid").disabled = true;
+					document.querySelector("#s1").innerHTML = "Employee details modified";
+				}
+				showAll();
+			});
+
+			const removeid = document.querySelector("#removeid");
+			removeid.addEventListener('click', () => {
+				let input = document.querySelector("#t1").value;
+				let output = getRemoveLogic(input);
+				if (output) {
+					document.querySelector("#t1").value = "";
+					document.querySelector("#t2").value = "";
+					document.querySelector("#t3").value = "";
+					document.querySelector("#t4").value = "";
+					document.querySelector("#modifyid").disabled = true;
+					document.querySelector("#removeid").disabled = true;
+					document.querySelector("#s1").innerHTML = "Employee details removed";
+
+				}
+				else {
+					document.querySelector("#t1").value = "";
+					document.querySelector("#t2").value = "";
+					document.querySelector("#t3").value = "";
+					document.querySelector("#t4").value = "";
+					document.querySelector("#modifyid").disabled = true;
+					document.querySelector("#removeid").disabled = true;
+					document.querySelector("#s1").innerHTML = "Employee details not removed";
+
+				}
+
+				showAll();
+
+			});
+
+
+			const viewallid = document.querySelector("#viewallid");
+			viewallid.addEventListener('click', () => {
+				document.querySelector("#s1").innerHTML = "Below are Employee details";
+				showAll();
+				document.querySelector("#t1").value = "";
+				document.querySelector("#t2").value = "";
+				document.querySelector("#t3").value = "";
+				document.querySelector("#t4").value = "";
+
+			});
+
+			const deptid = document.querySelector("#deptid");
+			deptid.addEventListener('click', () => {
+
+				let input = document.querySelector("#t4").value;
+				console.log(input);
+				let output = getByDeptId(input);
+				if (output.result) {
+					document.querySelector("#t1").value = "";
+					document.querySelector("#t2").value = "";
+					document.querySelector("#t3").value = "";
+					document.querySelector("#t4").value = "";
+					document.querySelector("#addid").disabled = true;
+					document.querySelector("#contentid").innerHTML = output.msg;
+					document.querySelector("#s1").innerHTML = "DeptID found Below are the employees belong to dept";
+
+
+				}
+				else {
+					document.querySelector("#t1").value = "";
+					document.querySelector("#t2").value = "";
+					document.querySelector("#t3").value = "";
+					document.querySelector("#t4").value = "";
+					document.querySelector("#deptid").disabled = false;
+					document.querySelector("#s1").innerHTML = "Dept ID not found";
+				}
+
+
+
+			});
+
+
+		});
+
+		function getItemDetailsLogic(empno) {
+			let output = { result: false, empdetails: {} };
+			for (let i = 0; i < empdata.length; i++) {
+				if (empdata[i].empid == empno) {
+					output.result = true;
+					output.empdetails = empdata[i];
+					break;
+				}
+
+			}
+			return output;
+		}
+
+		function getAddIdlogic(input) {
+			let output = true;
+
+			empdata.push(input);
+
+			return output;
+
+		}
+
+		function getModifyLogic(input) {
+			let output = false;
+			for (let i = 0; i < empdata.length; i++) {
+				if (empdata[i].empid == input.empid) {
+					output = true;
+					empdata[i].empid = input.empid;
+					empdata[i].empname = input.empname;
+					empdata[i].empmail = input.empmail;
+					empdata[i].deptid = input.deptid;
+					break;
+				}
+
+			}
+			return output;
+		}
+
+
+		function getRemoveLogic(input) {
+			let output = false;
+			for (let i = 0; i < empdata.length; i++) {
+				if (empdata[i].empid == input) {
+					output = true;
+					empdata.splice(i, 1);
+
+					break;
+				}
+
+			}
+			return output;
+		}
+
+		function getByDeptId(input) {
+			console.log(input);
+			let output = { result: false, msg: "" };
+			//let msg=""
+
+			for (let i = 0; i < empdata.length; i++) {
+				if (empdata[i].deptid == input) {
+					output.msg += "<Br/>" + empdata[i].empid + " --- " + empdata[i].empname +
+						"--" + empdata[i].empmail + "--" + empdata[i].deptid;
+
+
+					output.result = true;
+
+				}
+
+			}
+			console.log(output);
+			console.log(output.result);
+			return output;
+
+
+
+		}
+
+
+	</script>
+	<style>
+	</style>
+</head>
+
+<body>
+	<h1>So called Serious Assignment No.02</h1>
+	<Br /><Br />
+	<Br /><input type="text" placeholder="empid" id="t1"><span id="s1">Result</span>
+	<Br />
+	<Br /><input type="text" placeholder="empname" id="t2">
+	<Br />
+	<Br /><input type="text" placeholder="empmail" id="t3">
+	<Br />
+	<Br /><input type="text" placeholder="deptid" id="t4">
+	<hr />
+	<Br /><button id="addid" disabled>add</button>
+	<button id="modifyid" disabled>modify</button>
+	<button id="removeid" disabled>remove</button>
+	<button id="viewallid">viewall</button>
+	<button id="deptid">view on deptid</button>
+	<hr />
+	<p id="contentid">content</p>
+</body>
+
+</html>
