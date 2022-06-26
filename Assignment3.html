@@ -1,0 +1,350 @@
+<html>
+<head>
+<script>
+
+
+
+class Employee
+{
+
+constructor(empid,empname,empmail,deptid)
+{
+this.empid=empid;
+this.empname=empname;
+this.empmail=empmail;
+this.deptid=deptid;
+
+}
+
+}
+class Logic
+{
+
+constructor()
+{
+	this.empdata=[	new Employee(1,"A","a1@gmail.com",111),
+					new Employee(2,"B","b1@gmail.com",222),
+					new Employee(3,"C","c1@gmail.com",333)];
+}
+
+		 getItemDetailsLogic(empno)
+		{
+		let output ={ result:false, empdetails:{}};
+		for(let i=0; i < this.empdata.length; i++)
+		{
+		if(this.empdata[i].empid == empno )
+		{	
+			output.result=true;
+			output.empdetails=this.empdata[i];
+			break;
+		}
+
+		}
+		return output;
+		}
+
+		//getlogic function
+		getAddIdlogic(input)
+		{
+			let output=true;
+			
+			this.empdata.push(input);
+
+			return output;
+
+		}
+		
+		
+		//getModifyLogic function
+		getModifyLogic(input)
+		{
+		let output =false;
+		for(let i=0; i < this.empdata.length; i++)
+		{
+		if(this.empdata[i].empid == input.empid )
+		{	
+			output=true;
+			this.empdata[i].empid=input.empid;
+			this.empdata[i].empname=input.empname;
+			this.empdata[i].empmail=input.empmail;
+			this.empdata[i].deptid=input.deptid;
+			break;
+		}
+
+		}
+		return output;
+		}
+		
+		//getRemoveLogic function
+		getRemoveLogic(input)
+		{
+		let output =false;
+		for(let i=0; i < this.empdata.length; i++)
+		{
+		if(this.empdata[i].empid == input )
+		{	
+			output=true;
+			this.empdata.splice(i,1);
+			
+			break;
+		}
+
+		}
+		return output;
+		}
+		
+		
+		//getByDeptId function
+		getByDeptId(input){
+		
+		
+		let output ={result:false,msg:""};
+		
+		for(let i=0; i < this.empdata.length; i++)
+		{
+		if(this.empdata[i].deptid == input )
+		{	
+				output.msg+= "<Br/>" + this.empdata[i].empid +  " --- " + this.empdata[i].empname +
+				 "--"+ this.empdata[i].empmail +"--"+ this.empdata[i].deptid;
+					 
+				output.result=true;
+		}
+
+		}
+		
+		return output;
+		}
+		
+		getEmpData()
+		{
+			return this.empdata;
+		}
+
+
+}//end of logic class
+
+
+window.addEventListener('DOMContentLoaded',()=>{
+
+	let logic=new Logic();
+function showAll()
+			{
+			console.log("show all items");
+		
+				let output=logic.getEmpData();
+							
+				let msg="";
+				for(let i=0; i < output.length; i++) //dinosaur way..
+				  msg+= "<Br/>" + output[i].empid +  " --- " + output[i].empname +
+				  "--"+ output[i].empmail +"--"+ output[i].deptid;
+				  
+				  document.querySelector("#contentid").innerHTML=msg;
+		
+			}
+			
+			
+
+			console.log("Always check");
+			showAll();
+			
+			
+		const t1=document.querySelector("#t1");
+		
+		t1.addEventListener('blur',()=>{
+			let input= document.querySelector("#t1").value;	
+			let output=logic.getItemDetailsLogic(input);
+			if(output.result)
+			{
+				document.querySelector("#t1").value=output.empdetails.empid;
+				document.querySelector("#t2").value=output.empdetails.empname;
+				document.querySelector("#t3").value=output.empdetails.empmail;
+				document.querySelector("#t4").value=output.empdetails.deptid;
+				document.querySelector("#modifyid").disabled=false;
+				document.querySelector("#removeid").disabled=false;
+				
+				document.querySelector("#s1").innerHTML="Employee ID found";
+			}
+			else{
+				
+				document.querySelector("#t2").value="";
+				document.querySelector("#t3").value="";
+				document.querySelector("#t4").value="";
+				document.querySelector("#addid").disabled=false;
+				document.querySelector("#modifyid").disabled=true;
+				document.querySelector("#removeid").disabled=true;
+				document.querySelector("#s1").innerHTML="Employee ID not found";
+				}
+			showAll();
+		});
+		
+		
+		
+		
+		
+		
+		const addid=document.querySelector("#addid");
+		addid.addEventListener('click',()=>{
+			let input={empid:document.querySelector("#t1").value,empname:document.querySelector("#t2").value,empmail:document.querySelector("#t3").value,deptid:document.querySelector("#t4").value};	
+			let output=logic.getAddIdlogic(input);
+			
+			if(output)
+			{
+				document.querySelector("#t1").value="";
+				document.querySelector("#t2").value="";
+				document.querySelector("#t3").value="";
+				document.querySelector("#t4").value="";
+				document.querySelector("#addid").disabled=true;
+				document.querySelector("#s1").innerHTML="Employee details added";
+			}
+			else{
+				document.querySelector("#t1").value="";
+				document.querySelector("#t2").value="";
+				document.querySelector("#t3").value="";
+				document.querySelector("#t4").value="";
+				document.querySelector("#addid").disabled=true;
+				document.querySelector("#s1").innerHTML="Employee details not added";
+				}
+			showAll();
+		
+		});
+		
+		const modifyid=document.querySelector("#modifyid");
+		modifyid.addEventListener('click',()=>{
+			
+			let input={empid:document.querySelector("#t1").value,empname:document.querySelector("#t2").value,empmail:document.querySelector("#t3").value,deptid:document.querySelector("#t4").value};
+			let output=logic.getModifyLogic(input);
+			console.log(output);
+			if(output)
+			{
+				document.querySelector("#t1").value="";
+				document.querySelector("#t2").value="";
+				document.querySelector("#t3").value="";
+				document.querySelector("#t4").value="";
+				document.querySelector("#modifyid").disabled=true;
+				document.querySelector("#removeid").disabled=true;
+				document.querySelector("#s1").innerHTML="Employee details modified";
+			}
+			else{
+				document.querySelector("#t1").value="";
+				document.querySelector("#t2").value="";
+				document.querySelector("#t3").value="";
+				document.querySelector("#t4").value="";
+				document.querySelector("#modifyid").disabled=true;
+				document.querySelector("#removeid").disabled=true;
+				document.querySelector("#s1").innerHTML="Employee details modified";
+				}
+			showAll();
+		});
+		
+		const removeid=document.querySelector("#removeid");
+		removeid.addEventListener('click',()=>{
+		let input=document.querySelector("#t1").value;
+		let output=logic.getRemoveLogic(input);
+			if(output)
+			{
+				document.querySelector("#t1").value="";
+				document.querySelector("#t2").value="";
+				document.querySelector("#t3").value="";
+				document.querySelector("#t4").value="";
+				document.querySelector("#modifyid").disabled=true;
+				document.querySelector("#removeid").disabled=true;
+				document.querySelector("#s1").innerHTML="Employee details removed";
+					
+			}
+			else
+			{
+				document.querySelector("#t1").value="";
+				document.querySelector("#t2").value="";
+				document.querySelector("#t3").value="";
+				document.querySelector("#t4").value="";
+				document.querySelector("#modifyid").disabled=true;
+				document.querySelector("#removeid").disabled=true;
+				document.querySelector("#s1").innerHTML="Employee details not removed";
+					
+			}
+		
+			showAll();
+		
+		});
+		
+		
+		const viewallid=document.querySelector("#viewallid");
+		viewallid.addEventListener('click',()=>{
+			document.querySelector("#s1").innerHTML="Below are Employee details";
+				showAll();
+				document.querySelector("#t1").value="";
+				document.querySelector("#t2").value="";
+				document.querySelector("#t3").value="";
+				document.querySelector("#t4").value="";
+		
+		});
+		
+		const deptid=document.querySelector("#deptid");
+		deptid.addEventListener('click',()=>{
+		
+		let input=document.querySelector("#t4").value;
+		
+		let output=logic.getByDeptId(input);
+			if(output.result)
+			{
+				document.querySelector("#t1").value="";
+				document.querySelector("#t2").value="";
+				document.querySelector("#t3").value="";
+				document.querySelector("#t4").value="";
+				document.querySelector("#addid").disabled=true;
+				document.querySelector("#contentid").innerHTML=output.msg;
+				document.querySelector("#s1").innerHTML="DeptID found Below are the employees belong to dept";
+				
+				
+			}
+			else{
+				document.querySelector("#t1").value="";
+				document.querySelector("#t2").value="";
+				document.querySelector("#t3").value="";
+				document.querySelector("#t4").value="";
+				document.querySelector("#deptid").disabled=false;
+				document.querySelector("#s1").innerHTML="Dept ID not found";
+				}
+				
+				
+		
+		});
+
+			
+});
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+<style>
+</style>
+</head>
+<body>
+<h1>So called Serious Assignment No.02</h1>
+<Br/><Br/>
+<Br/><input type="text" placeholder="empid" id="t1"><span id="s1">Result</span>
+<Br/>
+<Br/><input type="text" placeholder="empname" id="t2">
+<Br/>
+<Br/><input type="text" placeholder="empmail" id="t3">
+<Br/>
+<Br/><input type="text" placeholder="deptid" id="t4">
+<hr/>
+<Br/><button id="addid" disabled>add</button>
+<button id="modifyid" disabled>modify</button>
+<button id="removeid" disabled>remove</button>
+<button id="viewallid" >viewall</button>
+<button id="deptid"  >view on deptid</button>
+<hr/>
+<p id="contentid">content</p>
+</body>
+</html>
